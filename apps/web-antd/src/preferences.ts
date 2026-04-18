@@ -8,6 +8,26 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
+    /** 应用名 */
     name: import.meta.env.VITE_APP_TITLE,
+    enableCheckUpdates: false,
+    layout: 'header-nav',
+    locale: 'en-US',
+    /** 是否显示偏好设置 */
+    enablePreferences: true,
+    authPageLayout: 'panel-center',
+  },
+  tabbar: {
+    enable: false,
+  },
+  theme: {
+    mode: 'auto',
+  },
+  widget: {
+    globalSearch: false,
+    notification: false,
+    refresh: false,
+    sidebarToggle: false,
+    timezone: false,
   },
 });

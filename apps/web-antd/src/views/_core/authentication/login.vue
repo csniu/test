@@ -4,7 +4,12 @@ import type { BasicOption } from '@vben/types';
 
 import { computed, markRaw } from 'vue';
 
-import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
+import {
+  AuthenticationLogin,
+  SliderCaptcha,
+  VbenButton,
+  z,
+} from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
@@ -30,20 +35,6 @@ const MOCK_USER_OPTIONS: BasicOption[] = [
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
-    {
-      component: 'VbenSelect',
-      componentProps: {
-        options: MOCK_USER_OPTIONS,
-        placeholder: $t('authentication.selectAccount'),
-      },
-      fieldName: 'selectAccount',
-      label: $t('authentication.selectAccount'),
-      rules: z
-        .string()
-        .min(1, { message: $t('authentication.selectAccount') })
-        .optional()
-        .default('vben'),
-    },
     {
       component: 'VbenInput',
       componentProps: {
@@ -94,5 +85,23 @@ const formSchema = computed((): VbenFormSchema[] => {
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
     @submit="authStore.authLogin"
-  />
+    :show-code-login="false"
+    :show-qrcode-login="false"
+    :show-forget-password="false"
+    :show-register="false"
+    :show-remember-me="false"
+    :show-third-party-login="false"
+  >
+    <template #third-party-login>
+      <div class="mt-4 flex flex-wrap justify-center">
+        <VbenButton
+          class="w-full"
+          variant="outline"
+          @click="handleGo(codeLoginPath)"
+        >
+          {{ $t('page.auth.ssoLogin') }}
+        </VbenButton>
+      </div>
+    </template>
+  </AuthenticationLogin>
 </template>
