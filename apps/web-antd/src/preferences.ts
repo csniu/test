@@ -16,6 +16,7 @@ export const overridesPreferences = defineOverridesPreferences({
     /** 是否显示偏好设置 */
     enablePreferences: true,
     authPageLayout: 'panel-center',
+    defaultHomePath: '/user-management',
   },
   tabbar: {
     enable: false,
@@ -29,5 +30,11 @@ export const overridesPreferences = defineOverridesPreferences({
     refresh: false,
     sidebarToggle: false,
     timezone: false,
+  },
+  logo: {
+    enable: true,
+    source: '/bsci-blue.svg',
+    sourceDark: '/bsci.svg',
+    fit: 'scale-down',
   },
 });

@@ -21,8 +21,6 @@ import { preferences } from '@vben/preferences';
 import { useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
-import AnalyticsVisitsSource from '../analytics/analytics-visits-source.vue';
-
 const userStore = useUserStore();
 
 // 这是一个示例数据，实际项目中需要根据实际情况进行调整

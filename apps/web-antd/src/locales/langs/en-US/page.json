@@ -6,11 +6,43 @@
     "qrcodeLogin": "Qr Code Login",
     "forgetPassword": "Forget Password",
     "profile": "Profile",
-    "ssoLogin": "Single Sign-On Login"
+    "ssoLogin": "Using Single Sign-On?",
+    "ssoLoginTitle": "If you are a Boston Scientific employee, you can click here to login with SSO."
   },
-  "dashboard": {
-    "title": "Dashboard",
-    "analytics": "Analytics",
-    "workspace": "Workspace"
+  "user-management": {
+    "title": "User Management",
+    "createUser": "Create User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "system-settings": {
+    "title": "System Settings",
+    "general": "General",
+    "security": "Security",
+    "notifications": "Notifications",
+    "appearance": "Appearance"
+  },
+  "logs": {
+    "title": "Logs",
+    "operationLogs": "Operation Logs",
+    "loginLogs": "Login Logs",
+    "search": "Search Logs",
+    "export": "Export Logs"
+  },
+  "generate-code": {
+    "title": "Challenger Code Generator",
+    "description": "Automatically generate code based on database tables, supporting multiple languages and frameworks.",
+    "generate": "Generate Code",
+    "tableName": "Table Name",
+    "className": "Class Name",
+    "packageName": "Package Name",
+    "author": "Author",
+    "language": "Programming Language",
+    "framework": "Framework"
   }
 }

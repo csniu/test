@@ -1,15 +1,9 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
 
 import { computed, markRaw } from 'vue';
 
-import {
-  AuthenticationLogin,
-  SliderCaptcha,
-  VbenButton,
-  z,
-} from '@vben/common-ui';
+import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
@@ -18,43 +12,12 @@ defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
-const MOCK_USER_OPTIONS: BasicOption[] = [
-  {
-    label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
-  },
-];
-
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {
       component: 'VbenInput',
       componentProps: {
         placeholder: $t('authentication.usernameTip'),
-      },
-      dependencies: {
-        trigger(values, form) {
-          if (values.selectAccount) {
-            const findUser = MOCK_USER_OPTIONS.find(
-              (item) => item.value === values.selectAccount,
-            );
-            if (findUser) {
-              form.setValues({
-                password: '123456',
-                username: findUser.value,
-              });
-            }
-          }
-        },
-        triggerFields: ['selectAccount'],
       },
       fieldName: 'username',
       label: $t('authentication.username'),
@@ -91,16 +54,15 @@ const formSchema = computed((): VbenFormSchema[] => {
     :show-register="false"
     :show-remember-me="false"
     :show-third-party-login="false"
+    submit-button-text=""
+    sub-title=" "
+    title=""
   >
     <template #third-party-login>
-      <div class="mt-4 flex flex-wrap justify-center">
-        <VbenButton
-          class="w-full"
-          variant="outline"
-          @click="handleGo(codeLoginPath)"
-        >
+      <div class="justify-left mt-4 flex flex-wrap gap-2">
+        <p :title="$t('page.auth.ssoLoginTitle')">
           {{ $t('page.auth.ssoLogin') }}
-        </VbenButton>
+        </p>
       </div>
     </template>
   </AuthenticationLogin>

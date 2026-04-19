@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ICE Challenger icon">
+  <circle cx="128" cy="128" r="120" fill="#003c71" />
+  <circle cx="128" cy="128" r="108" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.55" />
+
+  <polygon
+    points="128,38 200,82 200,174 128,218 56,174 56,82"
+    fill="none"
+    stroke="#00becc"
+    stroke-width="12"
+    stroke-linejoin="miter"
+  />
+
+  <g stroke="#3485fe" stroke-width="12" stroke-linecap="butt" fill="none">
+    <polyline points="88,104 64,128 88,152" />
+    <polyline points="168,104 192,128 168,152" />
+  </g>
+
+  <g fill="#ffffff" stroke="#bb33ff" stroke-width="12" stroke-linejoin="miter">
+    <rect x="100" y="120" width="56" height="48" rx="6" />
+    <path d="M112 120v-10a16 16 0 0 1 32 0v10" fill="none" />
+  </g>
+
+  <circle cx="128" cy="144" r="6" fill="#8800cc" />
+</svg>
