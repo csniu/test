@@ -68,7 +68,26 @@
     "statusUpdateSuccess": "用户状态已更新",
     "statusUpdateFail": "用户状态更新失败",
     "fetchGroupsFail": "获取用户组失败",
-    "fetchUsersFail": "获取用户列表失败"
+    "fetchUsersFail": "获取用户列表失败",
+    "createGroupSuccess": "用户组创建成功",
+    "createGroupFail": "用户组创建失败",
+    "createUserSuccess": "用户创建成功",
+    "createUserFail": "用户创建失败",
+    "groupNameRequired": "请输入用户组名称",
+    "fillRequired": "请填写所有必填项",
+    "groupDesc": "组描述",
+    "groupName": "组名称",
+    "groupNamePlaceholder": "请输入用户组名称",
+    "groupDescPlaceholder": "请输入用户组描述（可选）",
+    "usernamePlaceholder": "请输入用户名",
+    "realNamePlaceholder": "请输入真实姓名",
+    "emailPlaceholder": "请输入邮箱",
+    "passwordPlaceholder": "请输入密码",
+    "validUntilPlaceholder": "例如 2027-12-31",
+    "selectGroup": "请选择用户组",
+    "selectRole": "请选择角色",
+    "password": "密码",
+    "groupRequired": "请选择用户组"
   },
   "system-settings": {
     "title": "系统设置",
@@ -87,6 +106,30 @@
     "loginLogs": "登录日志",
     "search": "搜索日志",
     "export": "导出日志"
+  },
+  "audit-log": {
+    "title": "审计日志",
+    "colSeq": "序号",
+    "colCategory": "分类",
+    "colColor": "颜色",
+    "colProductName": "产品名称",
+    "colPrice": "价格",
+    "colDateTime": "时间",
+    "labelCategory": "分类",
+    "labelProductName": "产品名称",
+    "labelPrice": "价格",
+    "labelColor": "颜色",
+    "labelDate": "日期",
+    "colorPlaceholder": "请选择"
+  },
+  "challenge-code": {
+    "inputPlaceholder": "请输入 16 位挑战文本…",
+    "generate": "生成",
+    "otpTitle": "一次性密码",
+    "copy": "复制",
+    "copied": "✓ 已复制",
+    "copyFail": "复制失败，请手动复制。",
+    "requestFail": "请求失败，请重试。"
   },
   "generate-code": {
     "title": "挑战者代码生成器",

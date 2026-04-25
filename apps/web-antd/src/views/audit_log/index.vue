@@ -7,68 +7,46 @@ import { Page } from '@vben/common-ui';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getAuditLogListApi } from '#/api/core/audit-log';
+import { $t } from '#/locales';
 
-interface RowType {
-  category: string;
-  color: string;
-  id: string;
-  price: string;
-  productName: string;
-  releaseDate: string;
-}
-
-function getExampleTableApi(params: {
-  page: number;
-  pageSize: number;
-  sortBy?: string;
-  sortOrder?: string;
-}) {
-  return new Promise<{ list: RowType[]; total: number }>((resolve) => {
-    setTimeout(() => {
-      const data: RowType[] = [];
-      for (let i = 0; i < params.pageSize; i++) {
-        const index = (params.page - 1) * params.pageSize + i + 1;
-        data.push({
-          id: `${index}`,
-          category: `Category ${index}`,
-          color: `Color ${index}`,
-          productName: `Product ${index}`,
-          price: `$${(Math.random() * 100).toFixed(2)}`,
-          releaseDate: new Date(
-            Date.now() - Math.random() * 10_000_000_000,
-          ).toISOString(),
-        });
-      }
-      resolve({ list: data, total: 1000 });
-    }, 1000);
-  });
-}
-
-const gridOptions: VxeGridProps<RowType> = {
+const gridOptions: VxeGridProps = {
   checkboxConfig: {
     highlight: true,
-    labelField: 'name',
   },
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { align: 'left', title: 'Name', type: 'checkbox', width: 100 },
-    { field: 'category', sortable: true, title: 'Category' },
-    { field: 'color', sortable: true, title: 'Color' },
-    { field: 'productName', sortable: true, title: 'Product Name' },
-    { field: 'price', sortable: true, title: 'Price' },
-    { field: 'releaseDate', formatter: 'formatDateTime', title: 'DateTime' },
+    { title: $t('page.audit-log.colSeq'), type: 'seq', width: 50 },
+    { type: 'checkbox', width: 50 },
+    {
+      field: 'category',
+      sortable: true,
+      title: $t('page.audit-log.colCategory'),
+    },
+    { field: 'color', sortable: true, title: $t('page.audit-log.colColor') },
+    {
+      field: 'productName',
+      sortable: true,
+      title: $t('page.audit-log.colProductName'),
+    },
+    { field: 'price', sortable: true, title: $t('page.audit-log.colPrice') },
+    {
+      field: 'releaseDate',
+      formatter: 'formatDateTime',
+      title: $t('page.audit-log.colDateTime'),
+    },
   ],
   exportConfig: {},
   height: 'auto',
   keepSource: true,
   proxyConfig: {
     ajax: {
-      query: async ({ page, sort }) => {
-        return await getExampleTableApi({
+      query: async ({ page, sort, form }: any) => {
+        return await getAuditLogListApi({
           page: page.currentPage,
           pageSize: page.pageSize,
           sortBy: sort.field,
           sortOrder: sort.order,
+          ...form,
         });
       },
     },
@@ -81,64 +59,52 @@ const gridOptions: VxeGridProps<RowType> = {
   toolbarConfig: {
     custom: true,
     export: true,
-    // import: true,
     refresh: true,
     zoom: true,
   },
 };
 
 const formOptions: VbenFormProps = {
-  // 默认展开
   collapsed: false,
   fieldMappingTime: [['date', ['start', 'end']]],
   schema: [
     {
       component: 'Input',
-      defaultValue: '1',
       fieldName: 'category',
-      label: 'Category',
+      label: $t('page.audit-log.labelCategory'),
     },
     {
       component: 'Input',
       fieldName: 'productName',
-      label: 'ProductName',
+      label: $t('page.audit-log.labelProductName'),
     },
     {
       component: 'Input',
       fieldName: 'price',
-      label: 'Price',
+      label: $t('page.audit-log.labelPrice'),
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: [
-          {
-            label: 'Color1',
-            value: '1',
-          },
-          {
-            label: 'Color2',
-            value: '2',
-          },
+          { label: 'Color1', value: '1' },
+          { label: 'Color2', value: '2' },
         ],
-        placeholder: '请选择',
+        placeholder: $t('page.audit-log.colorPlaceholder'),
       },
       fieldName: 'color',
-      label: 'Color',
+      label: $t('page.audit-log.labelColor'),
     },
     {
       component: 'RangePicker',
       defaultValue: [dayjs().subtract(7, 'days'), dayjs()],
       fieldName: 'date',
-      label: 'Date',
+      label: $t('page.audit-log.labelDate'),
     },
   ],
-  // 控制表单是否显示折叠按钮
   showCollapseButton: true,
-  // 是否在字段值改变时提交表单
   submitOnChange: true,
-  // 按下回车时是否提交表单
   submitOnEnter: false,
 };
 
@@ -150,9 +116,6 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid>
-      <template #toolbar-tools>
-      </template>
-    </Grid>
+    <Grid />
   </Page>
 </template>

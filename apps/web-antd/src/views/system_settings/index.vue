@@ -6,6 +6,10 @@ import { Page } from '@vben/common-ui';
 import { Card, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import {
+  getSystemSettingsApi,
+  saveSystemSettingsApi,
+} from '#/api/core/system-settings';
 import { $t } from '#/locales';
 
 const [BaseForm, baseFormApi] = useVbenForm({
@@ -15,12 +19,7 @@ const [BaseForm, baseFormApi] = useVbenForm({
       class: 'w-2/4',
     },
   },
-  fieldMappingTime: [['rangePicker', ['startTime', 'endTime'], 'YYYY-MM-DD']],
   handleSubmit: onSubmit,
-  handleValuesChange(_values, fieldsChanged) {
-    message.info(`表单以下字段发生变化：${fieldsChanged.join('，')}`);
-  },
-
   layout: 'vertical',
   schema: [
     {
@@ -61,29 +60,28 @@ const [BaseForm, baseFormApi] = useVbenForm({
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2',
 });
 
-function onSubmit(values: Record<string, any>) {
-  message.success({
-    content: `form values: ${JSON.stringify(values)}`,
-  });
+async function onSubmit(values: Record<string, any>) {
+  try {
+    await saveSystemSettingsApi(values as any);
+    message.success($t('ui.actionMessage.operationSuccess'));
+  } catch {
+    message.error($t('ui.actionMessage.operationFailed'));
+  }
 }
 
-function handleSetFormValue() {
-  baseFormApi.setValues({
-    passwordExpiration: 90,
-    maxLoginAttempts: 5,
-    userValidityPeriod: 365,
-    autoDisableInactiveUsers: 30,
-  });
-}
-
-onMounted(() => {
-  handleSetFormValue();
+onMounted(async () => {
+  try {
+    const settings = await getSystemSettingsApi();
+    baseFormApi.setValues(settings);
+  } catch {
+    message.error($t('ui.actionMessage.operationFailed'));
+  }
 });
 </script>
 
 <template>
-  <Page content-class="flex flex-col gap-4">
-    <Card :title="$t('page.system-settings.security')">
+  <Page content-class="flex flex-col" auto-content-height>
+    <Card class="flex-1" :title="$t('page.system-settings.security')">
       <BaseForm />
     </Card>
   </Page>

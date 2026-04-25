@@ -68,7 +68,26 @@
     "statusUpdateSuccess": "User status updated",
     "statusUpdateFail": "Failed to update user status",
     "fetchGroupsFail": "Failed to fetch user groups",
-    "fetchUsersFail": "Failed to fetch user list"
+    "fetchUsersFail": "Failed to fetch user list",
+    "createGroupSuccess": "User group created successfully",
+    "createGroupFail": "Failed to create user group",
+    "createUserSuccess": "User created successfully",
+    "createUserFail": "Failed to create user",
+    "groupNameRequired": "Please enter the group name",
+    "fillRequired": "Please fill in all required fields",
+    "groupDesc": "Description",
+    "groupName": "Group Name",
+    "groupNamePlaceholder": "Enter group name",
+    "groupDescPlaceholder": "Enter group description (optional)",
+    "usernamePlaceholder": "Enter username",
+    "realNamePlaceholder": "Enter full name",
+    "emailPlaceholder": "Enter email address",
+    "passwordPlaceholder": "Enter password",
+    "validUntilPlaceholder": "e.g. 2027-12-31",
+    "selectGroup": "Select user group",
+    "selectRole": "Select role",
+    "password": "Password",
+    "groupRequired": "Please select a user group"
   },
   "system-settings": {
     "title": "System Settings",
@@ -87,6 +106,30 @@
     "loginLogs": "Login Logs",
     "search": "Search Logs",
     "export": "Export Logs"
+  },
+  "audit-log": {
+    "title": "Audit Log",
+    "colSeq": "No.",
+    "colCategory": "Category",
+    "colColor": "Color",
+    "colProductName": "Product Name",
+    "colPrice": "Price",
+    "colDateTime": "DateTime",
+    "labelCategory": "Category",
+    "labelProductName": "Product Name",
+    "labelPrice": "Price",
+    "labelColor": "Color",
+    "labelDate": "Date",
+    "colorPlaceholder": "Please select"
+  },
+  "challenge-code": {
+    "inputPlaceholder": "Enter 16-character challenge text…",
+    "generate": "Generate",
+    "otpTitle": "One-Time Password",
+    "copy": "Copy",
+    "copied": "✓ Copied",
+    "copyFail": "Copy failed, please copy manually.",
+    "requestFail": "Request failed, please try again."
   },
   "generate-code": {
     "title": "Challenger Code Generator",

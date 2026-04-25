@@ -17,6 +17,21 @@ export interface UserListItem {
   validUntil: string;
 }
 
+export interface CreateGroupParams {
+  name: string;
+  description?: string;
+}
+
+export interface CreateUserParams {
+  username: string;
+  password: string;
+  realName: string;
+  email: string;
+  validUntil: string;
+  role: string;
+  groupId?: string;
+}
+
 export async function getUserGroupsApi() {
   return requestClient.get<GroupInfo[]>('/user/groups');
 }
@@ -25,6 +40,14 @@ export async function getUserListApi(groupId?: string) {
   return requestClient.get<UserListItem[]>('/user/list', {
     params: groupId ? { groupId } : {},
   });
+}
+
+export async function createGroupApi(params: CreateGroupParams) {
+  return requestClient.post<{ success: boolean }>('/user/create-group', params);
+}
+
+export async function createUserApi(params: CreateUserParams) {
+  return requestClient.post<{ success: boolean }>('/user/create-user', params);
 }
 
 export async function updateUserRoleApi(userId: number, role: string) {

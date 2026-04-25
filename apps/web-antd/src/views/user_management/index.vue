@@ -3,6 +3,7 @@ import type { GroupInfo, UserListItem } from '#/api/core/user-management';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { Page } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
 import {
@@ -11,12 +12,20 @@ import {
   Button,
   Card,
   Col,
+  DatePicker,
   Dropdown,
+  Form,
+  FormItem,
+  Input,
+  InputPassword,
   Menu,
   MenuItem,
   message,
   Modal,
   Row,
+  Select,
+  SelectOption,
+  Space,
   Spin,
   Table,
   Tag,
@@ -24,6 +33,8 @@ import {
 } from 'ant-design-vue';
 
 import {
+  createGroupApi,
+  createUserApi,
   getUserGroupsApi,
   getUserListApi,
   updateUserRoleApi,
@@ -196,6 +207,114 @@ const groupStats = computed(() => {
   return { adminCount, activeCount, disabledCount, total: users.value.length };
 });
 
+// Search
+const searchKeyword = ref('');
+const filteredUsers = computed(() => {
+  const kw = searchKeyword.value.trim().toLowerCase();
+  if (!kw) return users.value;
+  return users.value.filter(
+    (u) =>
+      u.username.toLowerCase().includes(kw) ||
+      u.realName.toLowerCase().includes(kw) ||
+      u.email.toLowerCase().includes(kw),
+  );
+});
+
+// Create Group Modal
+const showCreateGroupModal = ref(false);
+const createGroupForm = ref({ name: '', description: '' });
+const createGroupLoading = ref(false);
+
+async function handleCreateGroup() {
+  if (!createGroupForm.value.name.trim()) {
+    message.warning($t('page.user-management.groupNameRequired'));
+    return;
+  }
+  createGroupLoading.value = true;
+  try {
+    await createGroupApi(createGroupForm.value);
+    message.success($t('page.user-management.createGroupSuccess'));
+    showCreateGroupModal.value = false;
+    createGroupForm.value = { name: '', description: '' };
+    await fetchGroups();
+  } catch {
+    message.error($t('page.user-management.createGroupFail'));
+  } finally {
+    createGroupLoading.value = false;
+  }
+}
+
+// Create User Modal
+const showCreateUserModal = ref(false);
+const createUserForm = ref({
+  username: '',
+  password: '',
+  realName: '',
+  email: '',
+  validUntil: '',
+  role: 'group-user',
+  groupId: '',
+});
+const createUserLoading = ref(false);
+
+const availableRoles = computed(() => {
+  if (isSysAdmin.value) {
+    return [
+      {
+        label: $t('page.user-management.roleGroupAdmin'),
+        value: ROLE_GROUP_ADMIN,
+      },
+      { label: $t('page.user-management.roleGroupUser'), value: 'group-user' },
+    ];
+  }
+  return [
+    { label: $t('page.user-management.roleGroupUser'), value: 'group-user' },
+  ];
+});
+
+function openCreateUserModal() {
+  createUserForm.value = {
+    username: '',
+    password: '',
+    realName: '',
+    email: '',
+    validUntil: '',
+    role: 'group-user',
+    groupId: isSysAdmin.value ? selectedGroupId.value || '' : '',
+  };
+  showCreateUserModal.value = true;
+}
+
+async function handleCreateUser() {
+  const f = createUserForm.value;
+  if (
+    !f.username ||
+    !f.password ||
+    !f.realName ||
+    !f.email ||
+    !f.validUntil ||
+    !f.role
+  ) {
+    message.warning($t('page.user-management.fillRequired'));
+    return;
+  }
+  if (isSysAdmin.value && !f.groupId) {
+    message.warning($t('page.user-management.groupRequired'));
+    return;
+  }
+  createUserLoading.value = true;
+  try {
+    await createUserApi(f);
+    message.success($t('page.user-management.createUserSuccess'));
+    showCreateUserModal.value = false;
+    await fetchUsers();
+  } catch {
+    message.error($t('page.user-management.createUserFail'));
+  } finally {
+    createUserLoading.value = false;
+  }
+}
+
 onMounted(async () => {
   await fetchGroups();
   await fetchUsers();
@@ -203,28 +322,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-5">
-    <div class="mb-5 flex items-center justify-between">
-      <div>
-        <h2 class="m-0 text-xl font-semibold">
-          {{ $t('page.user-management.title') }}
-        </h2>
-        <p class="mt-1 text-sm text-gray-500">
-          <template v-if="isSysAdmin">
-            {{ $t('page.user-management.descSysAdmin') }}
-          </template>
-          <template v-else-if="isGroupAdmin">
-            {{ $t('page.user-management.descGroupAdmin') }}
-          </template>
-          <template v-else>{{ $t('page.user-management.descUser') }}</template>
-        </p>
-      </div>
-    </div>
-
-    <Row :gutter="16">
+  <Page content-class="flex flex-col" auto-content-height>
+    <Row :gutter="16" :wrap="false" class="min-h-0 flex-1">
       <!-- Left: group list (sys admin only) -->
-      <Col v-if="isSysAdmin" :span="5">
-        <Card :title="$t('page.user-management.groupPanel')" class="h-full">
+      <Col v-if="isSysAdmin" :span="5" class="flex flex-col">
+        <Card :title="$t('page.user-management.groupPanel')" class="flex-1">
           <div
             v-for="group in groups"
             :key="group.id"
@@ -245,9 +347,9 @@ onMounted(async () => {
       </Col>
 
       <!-- Right: user table -->
-      <Col :span="isSysAdmin ? 19 : 24">
+      <Col :span="isSysAdmin ? 19 : 24" class="flex flex-col">
         <!-- Stats cards -->
-        <Row :gutter="12" class="mb-4">
+        <Row :gutter="12" class="mb-4 shrink-0">
           <Col :span="6">
             <Card size="small" class="text-center">
               <div class="text-2xl font-bold text-blue-600">
@@ -291,16 +393,41 @@ onMounted(async () => {
         </Row>
 
         <Card
+          class="flex-1"
           :title="
             selectedGroup
               ? `${selectedGroup.name} · ${$t('page.user-management.memberList')}`
               : $t('page.user-management.memberList')
           "
         >
+          <template #extra>
+            <Space>
+              <Input
+                v-model:value="searchKeyword"
+                allow-clear
+                style="width: 260px"
+                :placeholder="$t('page.user-management.searchPlaceholder')"
+              />
+              <Button
+                v-if="isSysAdmin"
+                type="default"
+                @click="showCreateGroupModal = true"
+              >
+                + {{ $t('page.user-management.addGroup') }}
+              </Button>
+              <Button
+                v-if="isSysAdmin || isGroupAdmin"
+                type="primary"
+                @click="openCreateUserModal"
+              >
+                + {{ $t('page.user-management.addUser') }}
+              </Button>
+            </Space>
+          </template>
           <Spin :spinning="loading">
             <Table
               :columns="columns"
-              :data-source="users"
+              :data-source="filteredUsers"
               :row-key="(r) => r.id"
               :pagination="{ pageSize: 10, showSizeChanger: false }"
               size="middle"
@@ -405,5 +532,120 @@ onMounted(async () => {
         </Card>
       </Col>
     </Row>
-  </div>
+
+    <!-- Create Group Modal -->
+    <Modal
+      v-model:open="showCreateGroupModal"
+      :title="$t('page.user-management.addGroup')"
+      :confirm-loading="createGroupLoading"
+      @ok="handleCreateGroup"
+      @cancel="createGroupForm = { name: '', description: '' }"
+    >
+      <Form layout="vertical" class="mt-4">
+        <FormItem :label="$t('page.user-management.groupName')" required>
+          <Input
+            v-model:value="createGroupForm.name"
+            :placeholder="$t('page.user-management.groupNamePlaceholder')"
+          />
+        </FormItem>
+        <FormItem :label="$t('page.user-management.groupDesc')">
+          <Input
+            v-model:value="createGroupForm.description"
+            :placeholder="$t('page.user-management.groupDescPlaceholder')"
+          />
+        </FormItem>
+      </Form>
+    </Modal>
+
+    <!-- Create User Modal -->
+    <Modal
+      v-model:open="showCreateUserModal"
+      :title="$t('page.user-management.addUser')"
+      :confirm-loading="createUserLoading"
+      @ok="handleCreateUser"
+    >
+      <Form layout="vertical" class="mt-4">
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.username')" required>
+              <Input
+                v-model:value="createUserForm.username"
+                :placeholder="$t('page.user-management.usernamePlaceholder')"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.password')" required>
+              <InputPassword
+                v-model:value="createUserForm.password"
+                :placeholder="$t('page.user-management.passwordPlaceholder')"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.realName')" required>
+              <Input
+                v-model:value="createUserForm.realName"
+                :placeholder="$t('page.user-management.realNamePlaceholder')"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.email')" required>
+              <Input
+                v-model:value="createUserForm.email"
+                :placeholder="$t('page.user-management.emailPlaceholder')"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.validUntil')" required>
+              <DatePicker
+                v-model:value="createUserForm.validUntil"
+                value-format="YYYY-MM-DD"
+                style="width: 100%"
+                :placeholder="$t('page.user-management.validUntilPlaceholder')"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <FormItem :label="$t('page.user-management.role')" required>
+              <Select
+                v-model:value="createUserForm.role"
+                style="width: 100%"
+                :placeholder="$t('page.user-management.selectRole')"
+              >
+                <SelectOption
+                  v-for="r in availableRoles"
+                  :key="r.value"
+                  :value="r.value"
+                >
+                  {{ r.label }}
+                </SelectOption>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <FormItem
+          v-if="isSysAdmin"
+          :label="$t('page.user-management.groupPanel')"
+          required
+        >
+          <Select
+            v-model:value="createUserForm.groupId"
+            style="width: 100%"
+            :placeholder="$t('page.user-management.selectGroup')"
+          >
+            <SelectOption v-for="g in groups" :key="g.id" :value="g.id">
+              {{ g.name }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+      </Form>
+    </Modal>
+  </Page>
 </template>
