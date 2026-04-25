@@ -34,10 +34,12 @@ const showDot = computed(() =>
 const menus = computed(() => [
   {
     handler: () => {
-      router.push({ name: 'Profile' });
+      router.push({
+        name: 'Password',
+      });
     },
-    icon: 'lucide:user',
-    text: $t('page.auth.profile'),
+    icon: 'lucide:key-round',
+    text: $t('profile.updatePassword'),
   },
 ]);
 

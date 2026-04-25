@@ -47,13 +47,13 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: 'Profile',
-    path: '/profile',
-    component: () => import('#/views/_core/profile/index.vue'),
+    name: 'Password',
+    path: '/password',
+    component: () => import('#/views/_core/profile/password.vue'),
     meta: {
-      icon: 'lucide:user',
+      icon: 'lucide:key-round',
       hideInMenu: true,
-      title: $t('page.auth.profile'),
+      title: $t('profile.updatePassword'),
     },
   },
 ];
