@@ -3,47 +3,38 @@ import type { EventHandlerRequest, H3Event } from 'h3';
 import { setResponseStatus } from 'h3';
 
 export function useResponseSuccess<T = any>(data: T) {
-  return {
-    code: 0,
-    data,
-    error: null,
-    message: 'ok',
-  };
+  return data;
 }
 
 export function usePageResponseSuccess<T = any>(
   page: number | string,
   pageSize: number | string,
   list: T[],
-  { message = 'ok' } = {},
 ) {
-  const pageData = pagination(
-    Number.parseInt(`${page}`),
-    Number.parseInt(`${pageSize}`),
-    list,
-  );
+  const currentPage = Number.parseInt(`${page}`);
+  const currentPageSize = Number.parseInt(`${pageSize}`);
+  const pageData = pagination(currentPage, currentPageSize, list);
 
-  return {
-    ...useResponseSuccess({
-      items: pageData,
-      total: list.length,
-    }),
-    message,
-  };
+  return useResponseSuccess({
+    items: pageData,
+    page: currentPage,
+    pageSize: currentPageSize,
+    total: list.length,
+  });
 }
 
 export function useResponseError(message: string, error: any = null) {
   return {
-    code: -1,
-    data: null,
-    error,
-    message,
+    error: {
+      details: error,
+      message,
+    },
   };
 }
 
 export function forbiddenResponse(
   event: H3Event<EventHandlerRequest>,
-  message = 'Forbidden Exception',
+  message = 'Forbidden',
 ) {
   setResponseStatus(event, 403);
   return useResponseError(message, message);
@@ -51,7 +42,7 @@ export function forbiddenResponse(
 
 export function unAuthorizedResponse(event: H3Event<EventHandlerRequest>) {
   setResponseStatus(event, 401);
-  return useResponseError('Unauthorized Exception', 'Unauthorized Exception');
+  return useResponseError('Unauthorized', 'Unauthorized');
 }
 
 export function sleep(ms: number) {

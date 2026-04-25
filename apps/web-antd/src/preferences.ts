@@ -17,6 +17,8 @@ export const overridesPreferences = defineOverridesPreferences({
     enablePreferences: true,
     authPageLayout: 'panel-center',
     defaultHomePath: '/user-management',
+    enableRefreshToken: true,
+    loginExpiredMode: 'page',
   },
   tabbar: {
     enable: false,

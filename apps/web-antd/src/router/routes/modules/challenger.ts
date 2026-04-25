@@ -1,17 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import {
-  VBEN_ANTDV_NEXT_PREVIEW_URL,
-  VBEN_DOC_URL,
-  VBEN_ELE_PREVIEW_URL,
-  VBEN_GITHUB_URL,
-  VBEN_LOGO_URL,
-  VBEN_NAIVE_PREVIEW_URL,
-  VBEN_TD_PREVIEW_URL,
-} from '@vben/constants';
-import { SvgAntdvNextLogoIcon, SvgTDesignIcon } from '@vben/icons';
-
-import { IFrameView } from '#/layouts';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
@@ -20,35 +8,38 @@ const routes: RouteRecordRaw[] = [
       icon: 'lucide:users',
       order: -1,
       title: $t('page.user-management.title'),
+      role: ['sysadmin', 'groupadmin'],
     },
     name: 'UserManagement',
     path: '/user-management',
-    component: () => import('#/views/workspace/index.vue'),
+    component: () => import('#/views/user_management/index.vue'),
   },
   {
     meta: {
       icon: 'lucide:settings',
       order: -1,
       title: $t('page.system-settings.title'),
+      role: ['sysadmin'],
     },
     name: 'SystemSettings',
     path: '/system-settings',
-    component: () => import('#/views/workspace/index.vue'),
+    component: () => import('#/views/system_settings/index.vue'),
   },
   {
     meta: {
       icon: 'lucide:book',
       order: -1,
       title: $t('page.logs.title'),
+      role: ['sysadmin'],
     },
     name: 'Logs',
     path: '/logs',
-    component: () => import('#/views/workspace/index.vue'),
+    component: () => import('#/views/audit_log/index.vue'),
   },
   {
-    name: 'GenerateCode',
-    path: '/generate-code',
-    component: () => import('#/views/workspace/index.vue'),
+    name: 'ChallengeCode',
+    path: '/challenge-code',
+    component: () => import('#/views/challenge_code/index.vue'),
     meta: {
       icon: 'lucide:shield-check',
       title: $t('page.generate-code.title'),

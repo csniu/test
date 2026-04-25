@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   if (!password || !username) {
     setResponseStatus(event, 400);
     return useResponseError(
-      'BadRequestException',
+      'Bad Request',
       'Username and password are required',
     );
   }
